@@ -7,13 +7,13 @@ pipeline {
     DOCKER_CRED = "docker-hub"
     KUBECONFIG_CRED = "kubeconfig-dev"
     NAMESPACE = "default"
-    HELM_RELEASE = "casestudy-jenkins1"
+    HELM_RELEASE = "casestudy"
   }
 
   stages {
     stage('Checkout Source Code') {
       steps {
-        git url: 'https://github.com/orion2182/casestudy-jenkins.git', branch: 'main'
+        git url: 'https://github.com/veriardiansyah/casestudy', branch: 'master'
       }
     }
 
