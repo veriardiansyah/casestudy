@@ -13,7 +13,7 @@ pipeline {
   stages {
     stage('Checkout Source Code') {
       steps {
-        git url: 'https://github.com/veriardiansyah/casestudy', branch: 'master'
+        git url: 'https://github.com/orion2182/casestudy-jenkins.git', branch: 'main'
       }
     }
 
