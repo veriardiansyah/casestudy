@@ -5,7 +5,7 @@ pipeline {
     IMAGE = "bolt391/demo-app"
     TAG = "latest"
     DOCKER_CRED = "docker-hub"
-    KUBECONFIG_CRED = "kubeconfig-dev"
+    KUBECONFIG_CRED = "bolt391"
     NAMESPACE = "default"
     HELM_RELEASE = "casestudy"
   }
