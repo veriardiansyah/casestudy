@@ -2,12 +2,7 @@ pipeline {
   agent any
 
   environment {
-    IMAGE = "bolt391/demo-app"
-    TAG = "latest"
-    DOCKER_CRED = "docker-hub"
-    KUBECONFIG_CRED = "kubeconfig-dev"
-    NAMESPACE = "default"
-    HELM_RELEASE = "casestudy"
+     DOCKERHUB_CREDENTIALS = credentials('docker-hub')
   }
 
   stages {
@@ -44,22 +39,9 @@ pipeline {
       }
     }
 
-    stage('Deploy to Kubernetes (Helm)') {
-      steps {
-        withCredentials([file(credentialsId: "${KUBECONFIG_CRED}", variable: 'KUBE_FILE')]) {
-          script {
-            echo "🚀 Deploying to Kubernetes via Helm..."
-            sh '''
-              export KUBECONFIG=$KUBE_FILE
-              helm upgrade --install $HELM_RELEASE ./helm \
-                --set image.repository=$IMAGE \
-                --set image.tag=$TAG \
-                --namespace $NAMESPACE --create-namespace
-            '''
-          }
-        }
-      }
-    }
+     stage('Deploy to Minikube') {
+            steps {
+                sh 'helm upgrade --install flask-app ./helm-chart --set image.repository=$DOCKERHUB_CREDENTIALS_USR/demo-app --set image.tag=latest'
   }
 
   post {
