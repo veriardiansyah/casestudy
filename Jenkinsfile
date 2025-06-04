@@ -8,6 +8,7 @@ pipeline {
     KUBECONFIG_CRED = "kubeconfig-dev"
     NAMESPACE = "default"
     HELM_RELEASE = "casestudy"
+    HELM_BIN = "${env.WORKSPACE}/linux-amd64/helm"
   }
 
   stages {
@@ -21,7 +22,7 @@ pipeline {
       steps {
         script {
           echo "🛠️ Building image ${IMAGE}:${TAG}..."
-          def builtImage = docker.build("${IMAGE}:${TAG}")
+          docker.build("${IMAGE}:${TAG}")
         }
       }
     }
@@ -29,7 +30,7 @@ pipeline {
     stage('Push Docker Image') {
       steps {
         withCredentials([usernamePassword(
-          credentialsId: "docker-hub",
+          credentialsId: "${DOCKER_CRED}",
           usernameVariable: 'USER',
           passwordVariable: 'PASS'
         )]) {
@@ -44,28 +45,28 @@ pipeline {
       }
     }
 
-      stage('Install Helm') {
+    stage('Install Helm') {
       steps {
         sh '''
-          curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
-          chmod +x get_helm.sh
-          ./get_helm.sh
+          curl -LO https://get.helm.sh/helm-v3.18.2-linux-amd64.tar.gz
+          tar -zxvf helm-v3.18.2-linux-amd64.tar.gz
         '''
+        sh "${HELM_BIN} version"
       }
     }
 
-      stage('Deploy to Kubernetes (Helm)') {
+    stage('Deploy to Kubernetes (Helm)') {
       steps {
         withCredentials([file(credentialsId: "${KUBECONFIG_CRED}", variable: 'KUBE_FILE')]) {
           script {
             echo "🚀 Deploying to Kubernetes via Helm..."
-            sh '''
+            sh """
               export KUBECONFIG=$KUBE_FILE
-              helm upgrade --install $HELM_RELEASE ./helm \
-                --set image.repository=$IMAGE \
-                --set image.tag=$TAG \
-                --namespace $NAMESPACE --create-namespace
-            '''
+              ${HELM_BIN} upgrade --install ${HELM_RELEASE} ./helm \
+                --set image.repository=${IMAGE} \
+                --set image.tag=${TAG} \
+                --namespace ${NAMESPACE} --create-namespace
+            """
           }
         }
       }
