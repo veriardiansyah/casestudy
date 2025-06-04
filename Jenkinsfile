@@ -10,17 +10,19 @@ pipeline {
     HELM_RELEASE = "casestudy"
   }
 
+ }
+
   stages {
     stage('Checkout Source Code') {
       steps {
-        git url: 'https://github.com/veriardiansyah/casestudy.git', branch: 'master'
+        git url: 'https://github.com/orion2182/casestudy-jenkins.git', branch: 'main'
       }
     }
 
     stage('Build Docker Image') {
       steps {
         script {
-          echo "🛠 Building image ${IMAGE}:${TAG}..."
+          echo "🛠️ Building image ${IMAGE}:${TAG}..."
           def builtImage = docker.build("${IMAGE}:${TAG}")
         }
       }
@@ -60,12 +62,6 @@ pipeline {
         }
       }
     }
-    stage('Checkout Source Code') {
-  steps {
-    cleanWs() // membersihkan workspace lama
-    git url: 'https://github.com/veriardiansyah/casestudy.git', branch: 'master'
-  }
-}
   }
 
   post {
