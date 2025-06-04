@@ -10,12 +10,10 @@ pipeline {
     HELM_RELEASE = "casestudy"
   }
 
- }
-
   stages {
     stage('Checkout Source Code') {
       steps {
-        git url: 'https://github.com/orion2182/casestudy-jenkins.git', branch: 'main'
+        git url: 'https://github.com/veriardiansyah/casestudy.git', branch: 'master'
       }
     }
 
@@ -72,3 +70,4 @@ pipeline {
       echo "❌ Pipeline Gagal: Cek log untuk mengetahui error"
     }
   }
+}
