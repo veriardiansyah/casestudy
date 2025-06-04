@@ -60,6 +60,12 @@ pipeline {
         }
       }
     }
+    stage('Checkout Source Code') {
+  steps {
+    cleanWs() // membersihkan workspace lama
+    git url: 'https://github.com/veriardiansyah/casestudy.git', branch: 'master'
+  }
+}
   }
 
   post {
