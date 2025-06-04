@@ -44,6 +44,16 @@ pipeline {
       }
     }
 
+      stage('Install Helm') {
+      steps {
+        sh '''
+          curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
+          chmod +x get_helm.sh
+          ./get_helm.sh
+        '''
+      }
+    }
+
       stage('Deploy to Kubernetes (Helm)') {
       steps {
         withCredentials([file(credentialsId: "${KUBECONFIG_CRED}", variable: 'KUBE_FILE')]) {
